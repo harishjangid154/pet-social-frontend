@@ -16,31 +16,36 @@ import TimeLine from "./Pages/TimeLine";
 import SinglePost from "./Pages/SinglePost";
 import Reset from "./Pages/Reset";
 import auth from "./Components/auth";
+import { Provider } from "react-redux";
+
+import store from "./redux";
 
 function App() {
   return (
-    <div className="App">
-      {/* HEADER SECTION START */}
-      <NavBar />
-      <Header />
-      {/* HEADER SECTION END */}
+    <Provider store={store}>
+      <div className="App">
+        {/* HEADER SECTION START */}
+        <NavBar />
+        <Header />
+        {/* HEADER SECTION END */}
 
-      <Router>
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/forgot" component={ForgotPassword} />
-          <Route path="/auth" component={auth} />
-          <Route path="/timeline" component={TimeLine} />
-          <Route path="/post" component={SinglePost} />
-          <Route path="/reset" component={Reset} />
-        </Switch>
-      </Router>
+        <Router>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+            <Route path="/forgot" component={ForgotPassword} />
+            <Route path="/auth" component={auth} />
+            <Route path="/timeline" component={TimeLine} />
+            <Route path="/post" component={SinglePost} />
+            <Route path="/reset" component={Reset} />
+          </Switch>
+        </Router>
 
-      {/* FOOTER */}
-      <Footer />
-    </div>
+        {/* FOOTER */}
+        <Footer />
+      </div>
+    </Provider>
   );
 }
 

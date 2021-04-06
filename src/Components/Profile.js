@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import store from "../redux";
+import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
-export default function Profile() {
+export default connect(
+  null,
+  null
+)(function Profile() {
+  let user = {};
+  const history = useHistory();
+  if (store.getState().isAuthenticated) {
+    console.log(user);
+    user = store.getState().user;
+  } else {
+    history.push("/login");
+  }
   return (
     <div className="contnt_1">
       <div className="list_1">
+        const initState = {};
         <ul>
+          {/* Fileters  */}
           <li>
             <input type="checkbox" className="chk_bx" />
             Friends
@@ -18,8 +34,10 @@ export default function Profile() {
       <div className="timeline_div">
         <div className="timeline_div1">
           <div className="profile_pic">
-            <img src="images/timeline_img1.png" />
+            {/* <img src="images/timeline_img1.png" /> */}
+            <img src={user.userImageUrl} alt="userProfile" />
             <div className="profile_text">
+              {/* <input type="file" placeholder="Change Profile Pic" /> */}
               <a href="#">Change Profile Pic</a>
             </div>
           </div>
@@ -33,18 +51,21 @@ export default function Profile() {
               <ul>
                 <li>
                   <div className="div_name1">Name :</div>
-                  <div className="div_name2">Stefiney Gibbs</div>
+                  <div className="div_name2">
+                    {user.firstName} {user.lastName}
+                  </div>
                 </li>
                 <li>
                   <div className="div_name1">Sex :</div>
-                  <div className="div_name2">Female</div>
+                  <div className="div_name2">{user.gender}</div>
                 </li>
                 <li>
                   <div className="div_name1">Description :</div>
                   <div className="div_name3">
-                    This is an example of a comment. You can create as many
+                    {user.info}
+                    {/* This is an example of a comment. You can create as many
                     comments like this one or sub comments as you like and
-                    manage all of your content inside Account.
+                    manage all of your content inside Account. */}
                   </div>
                 </li>
               </ul>
@@ -75,4 +96,4 @@ export default function Profile() {
       </div>
     </div>
   );
-}
+});

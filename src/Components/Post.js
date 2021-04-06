@@ -1,7 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import store from "../redux";
 
 export default function Post() {
+  const history = useHistory();
+  const posts = [];
+
+  const state = store.getState();
+
+  if (state.isAuthenticated) {
+    posts = [...state.posts];
+  } else {
+    history.push("/login");
+  }
+
   return (
     <div className="contnt_2">
       <div className="div_a">

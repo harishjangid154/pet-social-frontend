@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { api_base_url } from "../BaseURL/baseUrl";
+import { connect, useDispatch } from "react-redux";
+import store from "../redux";
 
-export default function SignupForm() {
+function SignupForm() {
   const history = useHistory();
   const userNameRef = useRef();
   const emailRef = useRef();
@@ -17,6 +19,7 @@ export default function SignupForm() {
     if (!checkBoxRef.current.checked) {
       setErrors({ ...errors, checkBox: "Accept Term" });
     } else {
+      // USER DATA
       const user = {
         email: emailRef.current.value,
         userName: userNameRef.current.value,
@@ -24,12 +27,20 @@ export default function SignupForm() {
         lastName: lastNameRef.current.value,
         password: passwordRef.current.value,
       };
+
+      // OPTIONS FOR FETCH
       const options = {
         method: "POST",
-        body: JSON.stringify({ ...user }),
+        headers: {
+          "Content-Type": "application/json",
+          mode: "no-cors",
+        },
+        body: JSON.stringify(user),
       };
       const url = api_base_url + "signup";
-      console.log(url);
+      console.log(options);
+
+      // POST API REQUEST TO SERVER FOR SIGNUP
       await fetch(url, options)
         .then((res) => res.json())
         .then((data) => {
@@ -39,7 +50,9 @@ export default function SignupForm() {
             const err = data.errors;
             setErrors({ ...err });
           } else {
-            history.push("/");
+            const user = data.user;
+            store.dispatch({ type: "SET_USER", payload: user });
+            history.push("/timeline");
           }
         })
         .catch((err) => {
@@ -109,3 +122,5 @@ export default function SignupForm() {
     </div>
   );
 }
+
+export default connect(null, null)(SignupForm);
