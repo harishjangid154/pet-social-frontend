@@ -1,32 +1,21 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
-import store from "../redux";
 
-export default function Post() {
-  const history = useHistory();
-  const posts = [];
-
-  const state = store.getState();
-
-  if (state.isAuthenticated) {
-    posts = [...state.posts];
-  } else {
-    history.push("/login");
-  }
-
+export default function Post({ post }) {
+  console.log(post);
   return (
     <div className="contnt_2">
       <div className="div_a">
         <div className="div_title">
-          User Interface PSD Source files Web Designing for web
+          {post.postHeader ||
+            "User Interface PSD Source files Web Designing for web"}
         </div>
         <div className="btm_rgt">
-          <div className="btm_arc">Cats</div>
+          <div className="btm_arc">{post.category || "cats"}</div>
         </div>
         <div className="div_top">
           <div className="div_top_lft">
-            <img src="images/img_6.png" />
-            Steave Waugh
+            <img src={post.userImageURL} />
+            {post.userFullName}
           </div>
           <div className="div_top_rgt">
             <span className="span_date">02 Jan 2014</span>
@@ -34,7 +23,7 @@ export default function Post() {
           </div>
         </div>
         <div className="div_image">
-          <img src="images/lft_img.png" alt="pet" />
+          <img src={post.postImageURL} alt="pet" />
         </div>
         <div className="div_btm">
           <div className="btm_list">
@@ -60,7 +49,7 @@ export default function Post() {
                   <span className="btn_icon">
                     <img src="images/icon_004.png" alt="share" />
                   </span>
-                  4 Comments
+                  {post.commectCount} Comments
                 </a>
               </li>
               <li>
@@ -73,7 +62,7 @@ export default function Post() {
               </li>
               <div className="like_count" style={{ marginRight: "10px" }}>
                 <span className="lft_cnt"></span>
-                <span className="mid_cnt">10</span>
+                <span className="mid_cnt">{post.likeCount}</span>
                 <span className="rit_cnt"></span>
               </div>
               <li>
@@ -86,7 +75,7 @@ export default function Post() {
               </li>
               <div className="like_count">
                 <span className="lft_cnt"></span>
-                <span className="mid_cnt">4</span>
+                <span className="mid_cnt">{post.unLikeCount}</span>
                 <span className="rit_cnt"></span>
               </div>
             </ul>

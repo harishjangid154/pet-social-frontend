@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   return (
@@ -34,23 +35,23 @@ export default function NavBar() {
                 aria-labelledby="dLabel"
               >
                 <li>
-                  <a tabindex="-1" href="#">
+                  <a tabIndex="-1" href="#">
                     My Profile
                   </a>
                 </li>
                 <li>
-                  <a tabindex="-1" href="#">
+                  <a tabIndex="-1" href="#">
                     Message Box
                   </a>
                 </li>
                 <li>
-                  <a tabindex="-1" href="#">
+                  <a tabIndex="-1" href="#">
                     Change Language
                   </a>
                 </li>
                 <li className="divider"></li>
                 <li>
-                  <a tabindex="-1" href="#">
+                  <a tabIndex="-1" href="#">
                     <input type="text" placeholder="search" />
                   </a>
                 </li>
@@ -60,7 +61,7 @@ export default function NavBar() {
               <ul className="nav">
                 <li className="active">
                   {" "}
-                  <a href="">Home</a>{" "}
+                  <a href="#">Home</a>{" "}
                 </li>
                 <li className="">
                   {" "}

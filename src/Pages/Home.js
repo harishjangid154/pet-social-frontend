@@ -3,8 +3,50 @@ import Category from "../Components/Category";
 import Featured from "../Components/Featured";
 import Opetions from "../Components/Opetions";
 import Post from "../Components/Post";
+import store from "../redux";
+import { useHistory, Link } from "react-router-dom";
+import { api_base_url } from "../BaseURL/baseUrl";
+import UploadPost from "../Components/UploadPost";
+import { connect } from "react-redux";
 
-export default class Home extends Component {
+class Home extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  async fetchPosts() {
+    console.log("called");
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+    };
+    const url = api_base_url + "post";
+    await fetch(url, options)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        store.dispatch({ type: "SET_POSTS", payload: data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  componentDidMount() {
+    if (!store.getState().userActions.isAuthenticated) {
+      this.props.history.push("/login");
+    } else this.fetchPosts();
+    console.log("Component called");
+  }
+  postpopup() {
+    document.querySelector(".popup").classList.remove("hide");
+  }
+  closePopup() {
+    document.querySelector(".popup").classList.add("hide");
+  }
   render() {
     return (
       <div className="container">
@@ -17,7 +59,9 @@ export default class Home extends Component {
               <span className="btn_sep">
                 <img src="images/btn_sep.png" alt="sep" />
               </span>
-              <a href="#">Upload Post</a>
+              <a href="#" onClick={this.postpopup}>
+                Upload Post
+              </a>
             </div>
             <div className="rght_btn">
               <span className="rght_btn_icon">
@@ -28,7 +72,14 @@ export default class Home extends Component {
               </span>
               <a href="#">Invite Friends</a>
             </div>
-
+            <Link to="/timeline">Profile</Link>
+            {/* POPUP WINDOW */}
+            <div className="popup hide">
+              <div className="popup_inner">
+                <UploadPost />
+                <button onClick={this.closePopup}>X</button>
+              </div>
+            </div>
             {/* CATEGORY & FEATURED PETS */}
 
             <Category />
@@ -39,90 +90,13 @@ export default class Home extends Component {
             <Opetions />
             {/* Feed Posts */}
 
-            <Post />
-            <Post />
-            {/* <div className="contnt_2">
-              <div className="div_a">
-                <div className="div_title">
-                  User Interface PSD Source files Web Designing for web
-                </div>
-                <div className="btm_rgt">
-                  <div className="btm_arc">Dogs</div>
-                </div>
-                <div className="div_top">
-                  <div className="div_top_lft">
-                    <img src="images/img_6.png" />
-                    Steave Waugh
-                  </div>
-                  <div className="div_top_rgt">
-                    <span className="span_date">02 Jan 2014</span>
-                    <span className="span_time">11:15am</span>
-                  </div>
-                </div>
-                <div className="div_image">
-                  <img src="images/lft_img1.png" alt="pet" />
-                </div>
-                <div className="div_btm">
-                  <div className="btm_list">
-                    <ul>
-                      <li>
-                        <a href="#">
-                          <span className="btn_icon">
-                            <img src="images/icon_001.png" alt="share" />
-                          </span>
-                          Share
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="btn_icon">
-                            <img src="images/icon_002.png" alt="share" />
-                          </span>
-                          Flag
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="btn_icon">
-                            <img src="images/icon_004.png" alt="share" />
-                          </span>
-                          4 Comments
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="btn_icon">
-                            <img src="images/icon_003.png" alt="share" />
-                          </span>
-                          Likes
-                        </a>
-                      </li>
-                      <div
-                        className="like_count"
-                        style={{ marginRight: "10px" }}
-                      >
-                        <span className="lft_cnt"></span>
-                        <span className="mid_cnt">10</span>
-                        <span className="rit_cnt"></span>
-                      </div>
-                      <li>
-                        <a href="#">
-                          <span className="btn_icon">
-                            <img src="images/icon_003.png" alt="share" />
-                          </span>
-                          Unlike
-                        </a>
-                      </li>
-                      <div className="like_count">
-                        <span className="lft_cnt"></span>
-                        <span className="mid_cnt">4</span>
-                        <span className="rit_cnt"></span>
-                      </div>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+            {/* {store.getState().posts.map((post) => (
+              <Post post />
+            ))} */}
+            {console.log(store.getState())}
+            {store.getState().postActions.posts.map((post) => (
+              <Post post={post} key={post.id} />
+            ))}
           </div>
         </div>
         <div className="clear"></div>
@@ -130,3 +104,8 @@ export default class Home extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return state;
+}
+
+export default connect(mapStateToProps)(Home);

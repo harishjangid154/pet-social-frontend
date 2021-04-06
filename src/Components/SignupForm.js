@@ -4,6 +4,12 @@ import { api_base_url } from "../BaseURL/baseUrl";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
 
+function emailValidate(email) {
+  const reg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+  reg.test(email);
+}
+
 function SignupForm() {
   const history = useHistory();
   const userNameRef = useRef();
@@ -15,9 +21,10 @@ function SignupForm() {
   const [errors, setErrors] = useState({});
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const err = {};
     setErrors({});
     if (!checkBoxRef.current.checked) {
-      setErrors({ ...errors, checkBox: "Accept Term" });
+      err.checkBox = "Accept Term";
     } else {
       // USER DATA
       const user = {
@@ -27,6 +34,27 @@ function SignupForm() {
         lastName: lastNameRef.current.value,
         password: passwordRef.current.value,
       };
+
+      if (user.email.length === 0 && !emailValidate(user.email)) {
+        err.email = "Enter a valid EMAIL";
+      }
+      if (user.userName.length === 0) {
+        err.userName = "Enter a USER NAME";
+      }
+      if (user.firstName.length === 0) {
+        err.firstName = "must not be empty";
+      }
+      if (user.lastName.length === 0) {
+        err.lastName = "must not be empty";
+      }
+      if (user.password.length === 0) {
+        err.password = "Enter a password";
+      }
+
+      if (Object.keys(err).length != 0) {
+        setErrors({ ...err });
+        return;
+      }
 
       // OPTIONS FOR FETCH
       const options = {
@@ -44,15 +72,13 @@ function SignupForm() {
       await fetch(url, options)
         .then((res) => res.json())
         .then((data) => {
-          // TODO:  ADD DISPATCH TO SET USER
-          console.log(data);
           if (data.errors) {
             const err = data.errors;
             setErrors({ ...err });
           } else {
             const user = data.user;
             store.dispatch({ type: "SET_USER", payload: user });
-            history.push("/timeline");
+            history.push("/");
           }
         })
         .catch((err) => {

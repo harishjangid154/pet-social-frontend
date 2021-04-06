@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -46,7 +47,9 @@ export default function Header() {
             {" "}
             <img src="../images/pic.png" />{" "}
           </div>
-          <div className="info_div1">Me</div>
+          <div className="info_div1">
+            <Link to="/timeline">Me</Link>
+          </div>
         </div>
       </div>
     </div>

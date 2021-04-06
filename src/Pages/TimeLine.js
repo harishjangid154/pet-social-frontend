@@ -3,9 +3,41 @@ import Profile from "../Components/Profile";
 import Category from "../Components/Category";
 import Featured from "../Components/Featured";
 import Post from "../Components/Post";
+import store from "../redux";
+import { connect } from "react-redux";
+import { api_base_url } from "../BaseURL/baseUrl";
+import { Link } from "react-router-dom";
 
-export default class TimeLine extends Component {
+class TimeLine extends Component {
+  async fetchPosts() {
+    console.log("called");
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+    };
+    const url = api_base_url + "post";
+    await fetch(url, options)
+      .then((res) => res.json())
+      .then((data) => {
+        store.dispatch({ type: "SET_POSTS", payload: data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  componentWillMount() {
+    console.log(store.getState().userActions);
+    if (!store.getState().userActions.isAuthenticated) {
+      console.log("redirect ");
+      this.props.history.push("/login");
+    } else this.fetchPosts();
+    console.log("Component called");
+  }
   render() {
+    console.log("INSIDE");
     return (
       <div className="container">
         <div className="content">
@@ -28,7 +60,7 @@ export default class TimeLine extends Component {
               </span>
               <a href="#">Invite Friends</a>
             </div>
-
+            <Link to="/">Home</Link>
             {/* CATEGORY & FEATURED PETS */}
 
             <Category />
@@ -39,8 +71,15 @@ export default class TimeLine extends Component {
             <Profile />
             {/* Feed Posts */}
 
-            <Post />
-            <Post />
+            {store
+              .getState()
+              .postActions.posts.filter(
+                (post) =>
+                  post.userName === store.getState().userActions.user.userName
+              )
+              .map((post) => {
+                <Post post={post} />;
+              })}
           </div>
         </div>
         <div className="clear"></div>
@@ -48,3 +87,9 @@ export default class TimeLine extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return state;
+}
+
+export default connect(mapStateToProps)(TimeLine);

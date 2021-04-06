@@ -1,6 +1,8 @@
 import { SET_POSTS } from "./types";
 
-const initState = {};
+const initState = {
+  posts: [],
+};
 
 export default (state = initState, action) => {
   switch (action.type) {

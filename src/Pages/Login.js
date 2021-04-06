@@ -4,15 +4,15 @@ import LoginForm from "../Components/LoginForm";
 export default class Login extends Component {
   render() {
     return (
-      <div class="container">
-        <div class="content">
-          <div class="content_rgt">
+      <div className="container">
+        <div className="content">
+          <div className="content_rgt">
             <LoginForm />
           </div>
 
-          <div class="content_lft">
+          <div className="content_lft">
             <h1>Welcome from PPL!</h1>
-            <p class="discrptn">
+            <p className="discrptn">
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
               injected humour, or randomised words which don't look even
@@ -23,7 +23,7 @@ export default class Login extends Component {
             <img src="images/img_9.png" alt="" />
           </div>
         </div>
-        <div class="clear"></div>
+        <div className="clear"></div>
       </div>
     );
   }

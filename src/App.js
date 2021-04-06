@@ -25,20 +25,19 @@ function App() {
     <Provider store={store}>
       <div className="App">
         {/* HEADER SECTION START */}
-        <NavBar />
-        <Header />
         {/* HEADER SECTION END */}
 
         <Router>
+          <NavBar />
+          <Header />
           <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/forgot" component={ForgotPassword} />
-            <Route path="/auth" component={auth} />
-            <Route path="/timeline" component={TimeLine} />
-            <Route path="/post" component={SinglePost} />
-            <Route path="/reset" component={Reset} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/signup" exact component={Signup} />
+            <Route path="/forgot" exact component={ForgotPassword} />
+            <Route path="/timeline" exact component={TimeLine} />
+            <Route path="/post" exact component={SinglePost} />
+            <Route path="/reset" exact component={Reset} />
           </Switch>
         </Router>
 

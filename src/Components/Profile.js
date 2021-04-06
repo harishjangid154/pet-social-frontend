@@ -9,9 +9,9 @@ export default connect(
 )(function Profile() {
   let user = {};
   const history = useHistory();
-  if (store.getState().isAuthenticated) {
+  if (store.getState().userActions.isAuthenticated) {
     console.log(user);
-    user = store.getState().user;
+    user = store.getState().userActions.user;
   } else {
     history.push("/login");
   }

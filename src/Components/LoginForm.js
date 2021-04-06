@@ -21,6 +21,18 @@ function LoginForm() {
       password: passwrodRef.current.value,
       remember: checkBoxRef.current.checked,
     };
+    const err = {};
+    if (user.email.length === 0) {
+      err.email = "Email must not be empty";
+    }
+    if (user.password.length === 0) {
+      err.password = "Password must not be empty";
+    }
+
+    if (Object.keys(err).length != 0) {
+      setErrors({ ...err });
+      return;
+    }
 
     // OPTIONS FOR FETCH REQUEST
 
@@ -41,10 +53,9 @@ function LoginForm() {
           console.log(err);
           setErrors({ ...err });
         } else {
-          // TODO: ADD DISPATCH TO SET USER
           const user = data.user;
           dispatch({ type: "SET_USER", payload: user });
-          history.push("/timeline");
+          history.push("/");
         }
       })
       .catch((err) => {
