@@ -16,6 +16,7 @@ class Home extends Component {
 
   async fetchPosts() {
     console.log("called");
+    const user = store.getState().userActions.user;
     const options = {
       method: "GET",
       headers: {
@@ -23,12 +24,14 @@ class Home extends Component {
         mode: "no-cors",
       },
     };
-    const url = api_base_url + "post";
+    const url = api_base_url + "post/:" + user.userName;
     await fetch(url, options)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        store.dispatch({ type: "SET_POSTS", payload: data });
+        // console.log(data.post);
+        if (data.post === "Posts unavailable") {
+          store.dispatch({ type: "SET_POSTS", payload: [] });
+        } else store.dispatch({ type: "SET_POSTS", payload: data });
       })
       .catch((err) => {
         console.log(err);
@@ -39,7 +42,7 @@ class Home extends Component {
     if (!store.getState().userActions.isAuthenticated) {
       this.props.history.push("/login");
     } else this.fetchPosts();
-    console.log("Component called");
+    // console.log("Component called");
   }
   postpopup() {
     document.querySelector(".popup").classList.remove("hide");
@@ -72,12 +75,14 @@ class Home extends Component {
               </span>
               <a href="#">Invite Friends</a>
             </div>
-            <Link to="/timeline">Profile</Link>
+
             {/* POPUP WINDOW */}
             <div className="popup hide">
               <div className="popup_inner">
                 <UploadPost />
-                <button onClick={this.closePopup}>X</button>
+                <button className="popup_button" onClick={this.closePopup}>
+                  X
+                </button>
               </div>
             </div>
             {/* CATEGORY & FEATURED PETS */}
@@ -93,7 +98,7 @@ class Home extends Component {
             {/* {store.getState().posts.map((post) => (
               <Post post />
             ))} */}
-            {console.log(store.getState())}
+            {/* {console.log(store.getState())} */}
             {store.getState().postActions.posts.map((post) => (
               <Post post={post} key={post.id} />
             ))}

@@ -18,7 +18,6 @@ export default connect(
   return (
     <div className="contnt_1">
       <div className="list_1">
-        const initState = {};
         <ul>
           {/* Fileters  */}
           <li>
@@ -35,7 +34,7 @@ export default connect(
         <div className="timeline_div1">
           <div className="profile_pic">
             {/* <img src="images/timeline_img1.png" /> */}
-            <img src={user.userImageUrl} alt="userProfile" />
+            <img src={user.userImage} alt="userProfile" />
             <div className="profile_text">
               {/* <input type="file" placeholder="Change Profile Pic" /> */}
               <a href="#">Change Profile Pic</a>

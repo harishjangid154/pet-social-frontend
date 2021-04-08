@@ -61,7 +61,9 @@ export default function NavBar() {
               <ul className="nav">
                 <li className="active">
                   {" "}
-                  <a href="#">Home</a>{" "}
+                  <a href="#">
+                    <Link to="/">Home</Link>
+                  </a>{" "}
                 </li>
                 <li className="">
                   {" "}

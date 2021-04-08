@@ -1,14 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { api_base_url } from "../BaseURL/baseUrl";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
-
-function emailValidate(email) {
-  const reg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-  reg.test(email);
-}
+import { signup } from "../Functions/authFunctions";
 
 function SignupForm() {
   const history = useHistory();
@@ -25,9 +19,10 @@ function SignupForm() {
     setErrors({});
     if (!checkBoxRef.current.checked) {
       err.checkBox = "Accept Term";
+      setErrors({ ...err });
     } else {
       // USER DATA
-      const user = {
+      let user = {
         email: emailRef.current.value,
         userName: userNameRef.current.value,
         firstName: firstNameRef.current.value,
@@ -35,56 +30,11 @@ function SignupForm() {
         password: passwordRef.current.value,
       };
 
-      if (user.email.length === 0 && !emailValidate(user.email)) {
-        err.email = "Enter a valid EMAIL";
+      user = await signup(user, setErrors, err);
+      if (user) {
+        store.dispatch({ type: "SET_USER", payload: user });
+        history.push("/");
       }
-      if (user.userName.length === 0) {
-        err.userName = "Enter a USER NAME";
-      }
-      if (user.firstName.length === 0) {
-        err.firstName = "must not be empty";
-      }
-      if (user.lastName.length === 0) {
-        err.lastName = "must not be empty";
-      }
-      if (user.password.length === 0) {
-        err.password = "Enter a password";
-      }
-
-      if (Object.keys(err).length != 0) {
-        setErrors({ ...err });
-        return;
-      }
-
-      // OPTIONS FOR FETCH
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify(user),
-      };
-      const url = api_base_url + "signup";
-      console.log(options);
-
-      // POST API REQUEST TO SERVER FOR SIGNUP
-      await fetch(url, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.errors) {
-            const err = data.errors;
-            setErrors({ ...err });
-          } else {
-            const user = data.user;
-            store.dispatch({ type: "SET_USER", payload: user });
-            history.push("/");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      console.log(JSON.stringify(user));
     }
   };
 
@@ -99,6 +49,7 @@ function SignupForm() {
             type="text"
             placeholder="Enter your username"
             ref={userNameRef}
+            required
           />
         </li>
         <li>
@@ -108,12 +59,18 @@ function SignupForm() {
             type="password"
             placeholder="Enter your password"
             ref={passwordRef}
+            required
           />
         </li>
         <li>
           <span>{errors.email}</span>
           <span>Email</span>
-          <input type="text" placeholder="Enter your email" ref={emailRef} />
+          <input
+            type="text"
+            placeholder="Enter your email"
+            ref={emailRef}
+            required
+          />
         </li>
         <li>
           <span>{errors.firstName}</span>
@@ -122,6 +79,7 @@ function SignupForm() {
             type="text"
             placeholder="Enter your first name"
             ref={firstNameRef}
+            required
           />
         </li>
         <li>
@@ -131,6 +89,7 @@ function SignupForm() {
             type="text"
             placeholder="Enter your last name"
             ref={lastNameRef}
+            required
           />
         </li>
         <li>

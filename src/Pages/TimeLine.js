@@ -7,8 +7,15 @@ import store from "../redux";
 import { connect } from "react-redux";
 import { api_base_url } from "../BaseURL/baseUrl";
 import { Link } from "react-router-dom";
+import UploadPost from "../Components/UploadPost";
 
 class TimeLine extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userName: "",
+    };
+  }
   async fetchPosts() {
     console.log("called");
     const options = {
@@ -18,24 +25,37 @@ class TimeLine extends Component {
         mode: "no-cors",
       },
     };
-    const url = api_base_url + "post";
+    const url =
+      api_base_url + "post/:" + store.getState().userActions.user.userName;
     await fetch(url, options)
       .then((res) => res.json())
       .then((data) => {
-        store.dispatch({ type: "SET_POSTS", payload: data });
+        if (data.post === "Posts unavailable") {
+          store.dispatch({ type: "SET_POSTS", payload: [] });
+        } else store.dispatch({ type: "SET_POSTS", payload: data });
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  componentWillMount() {
+  async componentWillMount() {
     console.log(store.getState().userActions);
+    console.log(store.getState().userActions.user.userName);
+    this.setState({ userName: store.getState().userActions.user.userName });
     if (!store.getState().userActions.isAuthenticated) {
       console.log("redirect ");
       this.props.history.push("/login");
-    } else this.fetchPosts();
+    } else await this.fetchPosts();
     console.log("Component called");
   }
+
+  postpopup() {
+    document.querySelector(".popup").classList.remove("hide");
+  }
+  closePopup() {
+    document.querySelector(".popup").classList.add("hide");
+  }
+
   render() {
     console.log("INSIDE");
     return (
@@ -49,7 +69,9 @@ class TimeLine extends Component {
               <span className="btn_sep">
                 <img src="images/btn_sep.png" alt="sep" />
               </span>
-              <a href="#">Upload Post</a>
+              <a href="#" onClick={this.postpopup}>
+                Upload Post
+              </a>
             </div>
             <div className="rght_btn">
               <span className="rght_btn_icon">
@@ -60,7 +82,15 @@ class TimeLine extends Component {
               </span>
               <a href="#">Invite Friends</a>
             </div>
-            <Link to="/">Home</Link>
+            {/* POPUP WINDOW */}
+            <div className="popup hide">
+              <div className="popup_inner">
+                <UploadPost />
+                <button className="popup_button" onClick={this.closePopup}>
+                  X
+                </button>
+              </div>
+            </div>
             {/* CATEGORY & FEATURED PETS */}
 
             <Category />
@@ -74,12 +104,11 @@ class TimeLine extends Component {
             {store
               .getState()
               .postActions.posts.filter(
-                (post) =>
-                  post.userName === store.getState().userActions.user.userName
+                (post) => post.userName === this.state.userName
               )
-              .map((post) => {
-                <Post post={post} />;
-              })}
+              .map((post) => (
+                <Post post={post} />
+              ))}
           </div>
         </div>
         <div className="clear"></div>

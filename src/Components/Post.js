@@ -5,16 +5,13 @@ export default function Post({ post }) {
   return (
     <div className="contnt_2">
       <div className="div_a">
-        <div className="div_title">
-          {post.postHeader ||
-            "User Interface PSD Source files Web Designing for web"}
-        </div>
+        <div className="div_title">{post.postTitle}</div>
         <div className="btm_rgt">
           <div className="btm_arc">{post.category || "cats"}</div>
         </div>
         <div className="div_top">
           <div className="div_top_lft">
-            <img src={post.userImageURL} />
+            <img src={post.userImage} />
             {post.userFullName}
           </div>
           <div className="div_top_rgt">
@@ -23,8 +20,17 @@ export default function Post({ post }) {
           </div>
         </div>
         <div className="div_image">
-          <img src={post.postImageURL} alt="pet" />
+          {console.log(post.postImage)}
+          {/* <img src={post.postImage} alt="pet" /> */}
+          {post.postImage.length != 0 ? (
+            <img src={post.postImage} alt="pet" />
+          ) : (
+            ""
+          )}
+
+          <p>{post.postDesc}</p>
         </div>
+
         <div className="div_btm">
           <div className="btm_list">
             <ul>
