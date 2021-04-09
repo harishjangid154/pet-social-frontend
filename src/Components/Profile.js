@@ -3,15 +3,12 @@ import store from "../redux";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-export default connect(
-  null,
-  null
-)(function Profile() {
+function Profile() {
   let user = {};
   const history = useHistory();
   if (store.getState().userActions.isAuthenticated) {
-    console.log(user);
     user = store.getState().userActions.user;
+    console.log(user);
   } else {
     history.push("/login");
   }
@@ -95,4 +92,5 @@ export default connect(
       </div>
     </div>
   );
-});
+}
+export default connect()(Profile);

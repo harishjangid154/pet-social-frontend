@@ -5,18 +5,6 @@ export default class ForgotPassword extends Component {
   render() {
     return (
       <>
-        {/* <div class="popup_sec" id="pop_forgt">
-          <div class="clos_btn">
-            <img src="images/clos.png" alt="" id="clos_pop" />
-          </div>
-          <div class="pop_hdr">
-            A mail has been send to your e-mail Id for Reset Password Link
-          </div>
-          <div class="man_contnt">
-            <span>Please Check Your Mail Box!</span>
-            <input type="submit" value="Ok" />
-          </div>
-        </div> */}
         <div class="container">
           <div class="content">
             <div class="content_rgt">

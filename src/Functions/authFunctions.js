@@ -2,11 +2,11 @@ import { api_base_url } from "../BaseURL/baseUrl";
 
 function emailValidate(email) {
   const reg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
   reg.test(email);
 }
 
 const signup = async (user, setErrors, err) => {
+  let token;
   if (user.email.length === 0 && !emailValidate(user.email)) {
     err.email = "Enter a valid EMAIL";
   }
@@ -48,19 +48,20 @@ const signup = async (user, setErrors, err) => {
         const err = data.errors;
         setErrors({ ...err });
       } else {
-        user = data;
+        token = data;
       }
     })
     .catch((err) => {
       console.log(err);
     });
-  return user;
+  return token;
 };
 
 const login = async (user, setErrors, err) => {
-  console.log(user);
-  if (!emailValidate(user.email)) {
-    err.email = "Enter a valid Email";
+  let authentication = false;
+  let token;
+  if (user.email.length === 0) {
+    err.email = "Must not be empty";
   }
   if (user.password.length === 0) {
     err.password = "Must not be empty";
@@ -87,13 +88,20 @@ const login = async (user, setErrors, err) => {
         console.log(err);
         setErrors({ ...err });
       } else {
-        user = data.user;
+        token = data.token;
+        authentication = true;
       }
     })
     .catch((err) => {
       console.log(err);
     });
-  return user;
+  console.log(authentication);
+  if (authentication) return token;
+  else {
+    err.user = "Invalid Credintials";
+    setErrors({ ...err });
+    return false;
+  }
 };
 
 export { signup, login };

@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
 import { login } from "../Functions/authFunctions";
+import jwt from "jsonwebtoken";
 function LoginForm() {
   const history = useHistory();
   const passwrodRef = useRef();
@@ -20,9 +21,12 @@ function LoginForm() {
       password: passwrodRef.current.value,
       remember: checkBoxRef.current.checked,
     };
-    user = await login(user, setErrors, err);
-    if (user) {
+    const token = await login(user, setErrors, err);
+
+    if (token) {
+      user = jwt.decode(token);
       dispatch({ type: "SET_USER", payload: user });
+      document.cookie = `jwt-token=${token}`;
       history.push("/");
     }
   };

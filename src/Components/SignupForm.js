@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
 import { signup } from "../Functions/authFunctions";
+import jwt from "jsonwebtoken";
 
 function SignupForm() {
   const history = useHistory();
@@ -30,8 +31,9 @@ function SignupForm() {
         password: passwordRef.current.value,
       };
 
-      user = await signup(user, setErrors, err);
-      if (user) {
+      const token = await signup(user, setErrors, err);
+      if (token) {
+        user = jwt.decode(token);
         store.dispatch({ type: "SET_USER", payload: user });
         history.push("/");
       }

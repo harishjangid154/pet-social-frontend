@@ -1,7 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Header() {
+  const history = useHistory();
+  const handleLogout = () => {
+    document.cookie = `jwt-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+    history.push("/login");
+  };
   return (
     <div className="header">
       <div className="header_lft">
@@ -49,6 +54,9 @@ export default function Header() {
           </div>
           <div className="info_div1">
             <Link to="/timeline">Me</Link>
+          </div>
+          <div className="info_div1">
+            <a onClick={handleLogout}> LogOut</a>
           </div>
         </div>
       </div>

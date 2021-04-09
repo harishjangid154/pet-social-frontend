@@ -2,47 +2,33 @@ import React, { Component } from "react";
 import Category from "../Components/Category";
 import Featured from "../Components/Featured";
 import Opetions from "../Components/Opetions";
-import Post from "../Components/Post";
 import store from "../redux";
-import { useHistory, Link } from "react-router-dom";
-import { api_base_url } from "../BaseURL/baseUrl";
 import UploadPost from "../Components/UploadPost";
 import { connect } from "react-redux";
+import ShowPosts from "../Components/ShowPosts";
+import jwt from "jsonwebtoken";
 
 class Home extends Component {
   constructor(props) {
     super(props);
-  }
-
-  async fetchPosts() {
-    console.log("called");
-    const user = store.getState().userActions.user;
-    const options = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        mode: "no-cors",
-      },
+    this.state = {
+      skip: 0,
+      limit: 10,
     };
-    const url = api_base_url + "post/:" + user.userName;
-    await fetch(url, options)
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data.post);
-        if (data.post === "Posts unavailable") {
-          store.dispatch({ type: "SET_POSTS", payload: [] });
-        } else store.dispatch({ type: "SET_POSTS", payload: data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.re = React.createRef(true);
   }
-
   componentDidMount() {
+    console.log(this.re.current);
+    const token = document.cookie;
+    console.log(token);
+    if (token) {
+      const user = jwt.decode(token);
+      store.dispatch({ type: "SET_USER", payload: user });
+    }
     if (!store.getState().userActions.isAuthenticated) {
       this.props.history.push("/login");
-    } else this.fetchPosts();
-    // console.log("Component called");
+    }
+    this.re.current = false;
   }
   postpopup() {
     document.querySelector(".popup").classList.remove("hide");
@@ -94,14 +80,9 @@ class Home extends Component {
             {/* Opetion to filter feed */}
             <Opetions />
             {/* Feed Posts */}
-
-            {/* {store.getState().posts.map((post) => (
-              <Post post />
-            ))} */}
-            {/* {console.log(store.getState())} */}
-            {store.getState().postActions.posts.map((post) => (
-              <Post post={post} key={post.id} />
-            ))}
+            {console.log("Home")}
+            {this.re.current ? window.scrollTo(0, 0) : null}
+            <ShowPosts />
           </div>
         </div>
         <div className="clear"></div>

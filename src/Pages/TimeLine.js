@@ -8,25 +8,31 @@ import { connect } from "react-redux";
 import { api_base_url } from "../BaseURL/baseUrl";
 import { Link } from "react-router-dom";
 import UploadPost from "../Components/UploadPost";
+import ShowPosts from "../Components/ShowPosts";
 
 class TimeLine extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "",
+      skip: 0,
+      limit: 10,
     };
   }
   async fetchPosts() {
     console.log("called");
     const options = {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         mode: "no-cors",
       },
+      body: JSON.stringify({
+        user: store.getState().userActions.user,
+        skip: this.state.skip,
+        limit: this.state.limit,
+      }),
     };
-    const url =
-      api_base_url + "post/:" + store.getState().userActions.user.userName;
+    const url = api_base_url + "post/posts";
     await fetch(url, options)
       .then((res) => res.json())
       .then((data) => {
@@ -101,14 +107,15 @@ class TimeLine extends Component {
             <Profile />
             {/* Feed Posts */}
 
-            {store
+            {/* {store
               .getState()
               .postActions.posts.filter(
                 (post) => post.userName === this.state.userName
               )
               .map((post) => (
                 <Post post={post} />
-              ))}
+              ))} */}
+            <ShowPosts />
           </div>
         </div>
         <div className="clear"></div>

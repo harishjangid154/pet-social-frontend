@@ -13,9 +13,8 @@ export default (state = initState, action) => {
       };
       break;
     case SET_SINGEL_POST:
-      const post = action.payload;
-      const i = Object.keys(state.posts) + 1;
       state.posts.push(action.payload);
+      break;
     default:
       state = {
         ...state,

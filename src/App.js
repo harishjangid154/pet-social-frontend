@@ -15,7 +15,6 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import TimeLine from "./Pages/TimeLine";
 import SinglePost from "./Pages/SinglePost";
 import Reset from "./Pages/Reset";
-import auth from "./Components/auth";
 import { Provider } from "react-redux";
 
 import store from "./redux";

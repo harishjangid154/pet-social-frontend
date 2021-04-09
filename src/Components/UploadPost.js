@@ -4,12 +4,10 @@ import { api_base_url } from "../BaseURL/baseUrl";
 import { connect } from "react-redux";
 
 function UploadPost() {
-  console.log("CAlled");
   const headingRef = useRef();
   const bodyRef = useRef();
   const imageRef = useRef();
   const categoryRef = useRef();
-
   const uploadImage = async () => {
     const image = imageRef.current.files[0];
     const formData = new FormData();
@@ -35,6 +33,7 @@ function UploadPost() {
     e.preventDefault();
 
     const user = store.getState().userActions.user;
+    console.log(user);
 
     let imagePath = "";
     if (imageRef.current.files[0]) {
@@ -66,8 +65,15 @@ function UploadPost() {
     await fetch(url, options)
       .then((res) => res.json())
       .then((data) => {
+        if (data.errors) {
+          window.alert(data.errors);
+        } else {
+          store.dispatch({ type: "SET_SINGLE_POST", payload: data.post });
+        }
         console.log(data);
-        store.dispatch({ type: "SET_SINGLE_POST", payload: data.post });
+      })
+      .catch((err) => {
+        console.log(err);
       });
 
     document.querySelector(".popup").classList.add("hide");
