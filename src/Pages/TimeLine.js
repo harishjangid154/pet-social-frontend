@@ -52,6 +52,7 @@ class TimeLine extends Component {
       console.log("redirect ");
       this.props.history.push("/login");
     } else await this.fetchPosts();
+    // store.dispatch({ type: "SHOW_NOTIFICATION", payload: "Profile" });
     console.log("Component called");
   }
 

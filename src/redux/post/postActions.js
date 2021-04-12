@@ -1,4 +1,4 @@
-import { SET_POSTS, SET_SINGEL_POST } from "./types";
+import { SET_POSTS, SET_SINGEL_POST } from "../types";
 
 const initState = {
   posts: [],

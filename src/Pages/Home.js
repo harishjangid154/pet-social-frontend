@@ -22,7 +22,8 @@ class Home extends Component {
     const token = document.cookie;
     console.log(token);
     if (token) {
-      const user = jwt.decode(token);
+      const user = jwt.decode(token.split("=")[1]);
+      console.log(user, token);
       store.dispatch({ type: "SET_USER", payload: user });
     }
     if (!store.getState().userActions.isAuthenticated) {

@@ -18,8 +18,8 @@ export default function useFetchPosts(skip) {
         mode: "no-cors",
       },
       body: JSON.stringify({
-        user: user,
-        limit: 4,
+        userId: user._id,
+        limit: 5,
         skip: skip,
       }),
     };

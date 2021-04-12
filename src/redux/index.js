@@ -1,10 +1,15 @@
 import { createStore, applyMiddleware, combineReducers, compose } from "redux";
-import userActions from "./userActions";
-import postActions from "./postActions";
-const reducers = combineReducers({ userActions, postActions });
+import userActions from "./user/userActions";
+import ReduxThunk from "redux-thunk";
+import postActions from "./post/postActions";
+import notification from "./notification";
+
+// combining all reducers
+const rootReducer = combineReducers({ userActions, postActions, notification });
 const store = createStore(
-  reducers,
+  rootReducer,
   compose(
+    applyMiddleware(ReduxThunk),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
