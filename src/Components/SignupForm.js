@@ -33,8 +33,10 @@ function SignupForm() {
 
       const token = await signup(user, setErrors, err);
       if (token) {
-        user = jwt.decode(token);
-        store.dispatch({ type: "SET_USER", payload: user });
+        console.log(token);
+        document.cookie = `jwt-token=${token.token}`;
+        // user = jwt.decode(token);
+        // store.dispatch({ type: "SET_USER", payload: user });
         history.push("/");
       }
     }

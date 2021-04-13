@@ -17,7 +17,7 @@ class Home extends Component {
     };
     this.re = React.createRef(true);
   }
-  componentDidMount() {
+  componentWillMount() {
     console.log(this.re.current);
     const token = document.cookie;
     console.log(token);

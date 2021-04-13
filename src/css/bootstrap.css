@@ -6534,7 +6534,7 @@ a.badge:focus {
 }
 .flag_div {
   float: left;
-  background-image: url(../images/arw.png);
+  /* background-image: url(../images/arw.png); */
   background-position: right;
   background-repeat: no-repeat;
   margin-top: 12px;
@@ -6596,7 +6596,7 @@ a.badge:focus {
 }
 .info_div1 {
   float: right;
-  background-image: url(../images/arw.png);
+  /* background-image: url(../images/arw.png); */
   width: 37%;
   color: #fff;
   margin-top: 13%;
@@ -6604,6 +6604,7 @@ a.badge:focus {
   text-align: left;
   background-repeat: no-repeat;
   background-position: right;
+  display: flex;
 }
 .container {
   width: 80%;

@@ -7,6 +7,9 @@ export default function useFetchPosts(skip) {
   const [errors, setErrors] = useState();
   const [posts, setPosts] = useState([]);
   useEffect(async () => {
+    if (!store.getState().userActions.user) {
+      return false;
+    }
     setLoading(true);
     setErrors(false);
 

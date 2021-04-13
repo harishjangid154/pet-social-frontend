@@ -1,8 +1,6 @@
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from "../types";
 
-const initState = {
-  isAuthenticated: false,
-};
+const initState = {};
 
 export default (state = initState, action) => {
   switch (action.type) {

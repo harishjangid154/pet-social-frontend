@@ -49,6 +49,7 @@ const signup = async (user, setErrors, err) => {
         setErrors({ ...err });
       } else {
         token = data;
+        console.log(token);
       }
     })
     .catch((err) => {
