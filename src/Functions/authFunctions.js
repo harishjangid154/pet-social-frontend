@@ -7,6 +7,7 @@ function emailValidate(email) {
 
 const signup = async (user, setErrors, err) => {
   let token;
+  console.log(user);
   if (user.email.length === 0 && !emailValidate(user.email)) {
     err.email = "Enter a valid EMAIL";
   }
@@ -54,6 +55,7 @@ const signup = async (user, setErrors, err) => {
     })
     .catch((err) => {
       console.log(err);
+      return false;
     });
   return token;
 };

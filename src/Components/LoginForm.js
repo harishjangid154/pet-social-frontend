@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
 import { login } from "../Functions/authFunctions";
 import jwt from "jsonwebtoken";
+import { api_base_url } from "../BaseURL/baseUrl";
 function LoginForm() {
   const history = useHistory();
   const passwrodRef = useRef();
@@ -30,6 +31,17 @@ function LoginForm() {
       history.push("/");
     }
   };
+  useEffect(() => {
+    const options = {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    fetch(api_base_url, options)
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div className="login_sec">
       <h1>Log In</h1>
