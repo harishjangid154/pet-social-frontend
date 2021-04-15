@@ -5,13 +5,39 @@ import store from "../redux";
 import { login } from "../Functions/authFunctions";
 import jwt from "jsonwebtoken";
 import { api_base_url } from "../BaseURL/baseUrl";
+import axios from "axios";
+
+import GoogleLogin from "react-google-login";
+
 function LoginForm() {
+  axios.defaults.withCredentials = true;
   const history = useHistory();
   const passwrodRef = useRef();
   const emailRef = useRef();
   const checkBoxRef = useRef(false);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch(store.dispatch);
+
+  const sendTokenServer = (token) => {
+    console.log(token.code);
+    const options = {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+      body: JSON.stringify({ code: token.code }),
+    };
+
+    fetch(`${api_base_url}auth/google`, options)
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+  };
+
+  const handleGoogleFail = () => {
+    console.log("Fail");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -31,17 +57,6 @@ function LoginForm() {
       history.push("/");
     }
   };
-  useEffect(() => {
-    const options = {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    fetch(api_base_url, options)
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  }, []);
   return (
     <div className="login_sec">
       <h1>Log In</h1>
@@ -68,6 +83,18 @@ function LoginForm() {
         <li>
           <input type="submit" value="Log In" onClick={handleSubmit} />
           <Link to="/forgot">Forgot Password</Link>
+        </li>
+        <li>
+          {/* <input type="submit" value="Google+" onClick={handleGoogleLogin} /> */}
+          <GoogleLogin
+            clientId="841304087440-2o4esvu70n6s91b881vk9nthgfu0fm3t.apps.googleusercontent.com"
+            buttonText="Google+"
+            accessType="offline"
+            responseType="code"
+            onSuccess={sendTokenServer}
+            onFailure={handleGoogleFail}
+            isSignedIn="false"
+          />
         </li>
       </ul>
       <div className="addtnal_acnt">

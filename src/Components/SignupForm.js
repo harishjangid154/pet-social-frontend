@@ -104,6 +104,9 @@ function SignupForm() {
         <li>
           <input type="submit" value="Register" onClick={handleSubmit} />
         </li>
+        <li>
+          <input type="submit" value="Google+" onClick={handleSubmit} />
+        </li>
       </ul>
       <div className="addtnal_acnt">
         I already have an account.<Link to="/login">Login My Account !</Link>

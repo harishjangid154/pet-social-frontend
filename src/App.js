@@ -16,8 +16,10 @@ import TimeLine from "./Pages/TimeLine";
 import SinglePost from "./Pages/SinglePost";
 import Reset from "./Pages/Reset";
 import { Provider } from "react-redux";
+import { useEffect } from "react";
 
 import store from "./redux";
+import axios from "axios";
 
 function App() {
   return (
