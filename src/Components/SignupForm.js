@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
-import store from "../redux";
+import { connect } from "react-redux";
+
 import { signup } from "../Functions/authFunctions";
-import jwt from "jsonwebtoken";
+import GoogleLogin from "react-google-login";
+import { api_base_url } from "../BaseURL/baseUrl";
+import axios from "axios";
 
 function SignupForm() {
   const history = useHistory();
@@ -14,6 +16,22 @@ function SignupForm() {
   const lastNameRef = useRef();
   const checkBoxRef = useRef();
   const [errors, setErrors] = useState({});
+
+  const sendTokenServer = (token) => {
+    axios({
+      method: "post",
+      url: `${api_base_url}auth/google`,
+      data: { code: token.code },
+    }).then((res) => {
+      console.log(res);
+      history.push("/");
+    });
+  };
+
+  const handleGoogleFail = () => {
+    console.log("Fail");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const err = {};
@@ -33,8 +51,8 @@ function SignupForm() {
 
       const token = await signup(user, setErrors, err);
       if (token) {
-        console.log(token);
-        document.cookie = `jwt-token=${token.token}`;
+        // console.log(token);
+        // document.cookie = `jwt-token=${token.token}`;
         // user = jwt.decode(token);
         // store.dispatch({ type: "SET_USER", payload: user });
         history.push("/");
@@ -105,7 +123,15 @@ function SignupForm() {
           <input type="submit" value="Register" onClick={handleSubmit} />
         </li>
         <li>
-          <input type="submit" value="Google+" onClick={handleSubmit} />
+          <GoogleLogin
+            clientId="841304087440-2o4esvu70n6s91b881vk9nthgfu0fm3t.apps.googleusercontent.com"
+            buttonText="Google+"
+            accessType="offline"
+            responseType="code"
+            onSuccess={sendTokenServer}
+            onFailure={handleGoogleFail}
+            isSignedIn="false"
+          />
         </li>
       </ul>
       <div className="addtnal_acnt">

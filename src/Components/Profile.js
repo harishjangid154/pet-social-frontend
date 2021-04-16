@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import store from "../redux";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";

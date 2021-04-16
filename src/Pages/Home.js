@@ -18,16 +18,22 @@ class Home extends Component {
     this.re = React.createRef(true);
   }
   componentWillMount() {
-    console.log(this.re.current);
-    const token = document.cookie;
-    console.log(token);
-    if (token) {
-      const user = jwt.decode(token.split("=")[1]);
-      console.log(user, token);
-      store.dispatch({ type: "SET_USER", payload: user });
-    }
+    console.log(this.props.user);
+    console.log(store.getState().userActions.isAuthenticated);
     if (!store.getState().userActions.isAuthenticated) {
-      this.props.history.push("/login");
+      const token = document.cookie;
+      console.log(token);
+      if (token) {
+        const userToken = token
+          .split("; ")
+          .find((cookie) => cookie.startsWith("jwt-token="))
+          .split("=")[1];
+        const user = jwt.decode(userToken);
+        console.log(user, token);
+        store.dispatch({ type: "SET_USER", payload: user });
+      } else {
+        this.props.history.push("/login");
+      }
     }
     this.re.current = false;
   }
@@ -92,7 +98,10 @@ class Home extends Component {
   }
 }
 function mapStateToProps(state) {
-  return state;
+  return {
+    user: state.userActions.user,
+    isAuthenticated: state.userActions.isAuthenticated,
+  };
 }
 
 export default connect(mapStateToProps)(Home);

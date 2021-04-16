@@ -24,7 +24,7 @@ const signup = async (user, setErrors, err) => {
     err.password = "Enter a password";
   }
 
-  if (Object.keys(err).length != 0) {
+  if (Object.keys(err).length !== 0) {
     setErrors({ ...err });
     return false;
   }
@@ -37,6 +37,7 @@ const signup = async (user, setErrors, err) => {
       mode: "no-cors",
     },
     body: JSON.stringify(user),
+    credentials: "include",
   };
   const url = api_base_url + "auth/signup";
   console.log(options);
@@ -81,6 +82,7 @@ const login = async (user, setErrors, err) => {
       mode: "no-cors",
     },
     body: JSON.stringify(user),
+    credentials: "include",
   };
   const url = api_base_url + "auth/login";
   await fetch(url, options)

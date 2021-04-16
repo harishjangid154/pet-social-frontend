@@ -1,35 +1,41 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import { connect } from "react-redux";
 import Post from "./Post";
 import useFetchPosts from "../customHooks/useFetchPosts";
 import store from "../redux";
 
-function ShowPosts() {
+function ShowPosts(props) {
   const [skip, setSkip] = useState(0);
-  const { loading, errors, posts } = useFetchPosts(skip);
+  let { loading, errors, posts } = useFetchPosts(skip);
   let observer = useRef();
-  const lastRef = useCallback((n) => {
-    if (loading) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !errors) {
-        setSkip((prevSkip) => {
-          return prevSkip + 5;
-        });
-      }
-    });
-    if (n) observer.current.observe(n);
-  }, loading);
+  const lastRef = useCallback(
+    (n) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !errors) {
+          setTimeout(() => {
+            setSkip((prevSkip) => {
+              return prevSkip + 5;
+            });
+          }, 1000);
+        }
+      });
+      if (n) observer.current.observe(n);
+    },
+    [loading, errors]
+  );
 
   if (!loading) {
-    store.dispatch({ type: "SET_POSTS", payload: posts });
+    if (posts.length !== 0)
+      store.dispatch({ type: "SET_POSTS", payload: posts });
   }
+
   return (
     <div>
-      <p>{loading ? "Loading..." : null}</p>
-      {store.getState().postActions.posts.length != 0
-        ? store.getState().postActions.posts.map((post, index) => {
-            if (store.getState().postActions.posts.length === index + 1)
+      {props.posts.length !== 0
+        ? props.posts.map((post, index) => {
+            if (props.posts.length === index + 1)
               return (
                 <div className="contnt_2" key={index} ref={lastRef}>
                   <Post post={post} />
@@ -43,8 +49,15 @@ function ShowPosts() {
               );
           })
         : null}
+      <h1>{loading ? "Loading..." : null}</h1>
     </div>
   );
 }
 
-export default connect()(ShowPosts);
+const mapStateToProps = (state) => {
+  return {
+    posts: state.postActions.posts,
+  };
+};
+
+export default connect(mapStateToProps)(ShowPosts);

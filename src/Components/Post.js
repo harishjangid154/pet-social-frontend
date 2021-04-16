@@ -1,113 +1,44 @@
 import React, { useState, useRef, useEffect } from "react";
-import store from "../redux";
 import { api_base_url } from "../BaseURL/baseUrl";
 import Comment from "./Comment";
+import axios from "axios";
 
 export default function Post({ post }) {
-  const [liked, setLiked] = useState(false);
-  const [unliked, setUnliked] = useState(false);
   const [likes, setLikes] = useState(post.likeCount);
   const [unlikes, setUnlikes] = useState(post.unlikeCount);
   const [classes, setClasses] = useState("contnt_3 hide");
   const commentRef = useRef();
   const [comments, setComments] = useState([]);
-  const userId = store.getState().userActions.user._id;
 
   const handleLike = () => {
-    if (!liked) {
-      // TODO SEND REQUEST TO SERVER TO ADD LIKE TO THE POST
-      const opetions = {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify({
-          userId,
-        }),
-      };
-
-      fetch(`${api_base_url}like/addlike/${post._id}`, opetions)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.ok) {
-            setLiked(true);
-            setLikes((preLikes) => preLikes + 1);
-          }
-        });
-
-      // if done then
-      // dispatch action to increment like
-    } else {
-      const opetions = {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify({
-          userId,
-        }),
-      };
-
-      fetch(`${api_base_url}like/removelike/${post._id}`, opetions)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.ok) {
-            setLiked(false);
-            setLikes((preLlikes) => preLlikes - 1);
-          }
-        });
-    }
+    axios({
+      method: "post",
+      url: `${api_base_url}like/add/${post._id}`,
+    }).then((res) => {
+      console.log(res);
+      if (res.data === "added") {
+        setLikes((preLikes) => preLikes + 1);
+      }
+      if (res.data === "removed") {
+        setLikes((preLikes) => preLikes - 1);
+      }
+    });
     console.log("Liked a post", post._id);
   };
   const handleUnLike = () => {
+    axios({
+      method: "post",
+      url: `${api_base_url}like/addunlike/${post._id}`,
+    }).then((res) => {
+      console.log(res);
+      if (res.data === "added") {
+        setUnlikes((prevUnlikes) => prevUnlikes + 1);
+      }
+      if (res.data === "removed") {
+        setUnlikes((prevUnlikes) => prevUnlikes - 1);
+      }
+    });
     console.log("unLiked a post");
-    if (!unliked) {
-      // TODO SEND REQUEST TO SERVER TO ADD LIKE TO THE POST
-      const opetions = {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify({
-          userId,
-        }),
-      };
-
-      fetch(`${api_base_url}like/addunlike/${post._id}`, opetions)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.ok) {
-            setUnliked(true);
-            setUnlikes((prevUnlikes) => prevUnlikes + 1);
-          }
-        });
-
-      // if done then
-      // dispatch action to increment like
-    } else {
-      const opetions = {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify({
-          userId,
-        }),
-      };
-
-      fetch(`${api_base_url}like/removeunlike/${post._id}`, opetions)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.ok) {
-            setUnliked(false);
-            setUnlikes((prevUnlikes) => prevUnlikes - 1);
-          }
-        });
-    }
   };
   let add = false;
   const handleComment = () => {
@@ -129,17 +60,26 @@ export default function Post({ post }) {
         mode: "no-cors",
       },
       body: JSON.stringify({
-        userId,
         text: commentText,
         postId: post._id,
       }),
+      credentials: "include",
     };
 
     fetch(`${api_base_url}comment/add`, options)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.text);
-        setComments((prevComments) => [...prevComments, data]);
+        fetch(`${api_base_url}comment/get/${data._id}`, options)
+          .then((res) => res.json())
+          .then((data) => {
+            // data is object contain comment id, commnet text and userId Who post the comment
+            console.log(data);
+            commentRef.current.value = "";
+            setComments((prevComments) => [...prevComments, ...data]);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -152,9 +92,7 @@ export default function Post({ post }) {
         "Content-Type": "application/json",
         Accept: "*/*",
       },
-      body: JSON.stringify({
-        userId: userId,
-      }),
+      credentials: "include",
     };
 
     post.comments.forEach((comment) => {
@@ -169,7 +107,7 @@ export default function Post({ post }) {
           console.log(err);
         });
     });
-  }, []);
+  }, [post.comments]);
 
   return (
     <div className="div_a">
@@ -179,7 +117,7 @@ export default function Post({ post }) {
       </div>
       <div className="div_top">
         <div className="div_top_lft">
-          <img src={post.userImage} />
+          <img src={post.userImage} alt="user" />
           {post.userFullName}
         </div>
         <div className="div_top_rgt">
@@ -188,7 +126,7 @@ export default function Post({ post }) {
         </div>
       </div>
       <div className="div_image">
-        {post.postImage.length != 0 ? (
+        {post.postImage.length !== 0 ? (
           <img src={post.postImage} alt="pet" />
         ) : (
           ""

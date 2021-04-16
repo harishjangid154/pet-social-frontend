@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import store from "../redux";
@@ -20,18 +20,15 @@ function LoginForm() {
 
   const sendTokenServer = (token) => {
     console.log(token.code);
-    const options = {
+    axios({
       method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        mode: "no-cors",
-      },
-      body: JSON.stringify({ code: token.code }),
-    };
-
-    fetch(`${api_base_url}auth/google`, options)
-      .then((res) => res.json())
-      .then((data) => console.log(data))
+      url: `${api_base_url}auth/google`,
+      data: { code: token.code },
+    })
+      .then((res) => {
+        // console.log(res);
+        history.push("/");
+      })
       .catch((err) => console.log(err));
   };
 
@@ -51,9 +48,6 @@ function LoginForm() {
     const token = await login(user, setErrors, err);
 
     if (token) {
-      user = jwt.decode(token);
-      dispatch({ type: "SET_USER", payload: user });
-      document.cookie = `jwt-token=${token}`;
       history.push("/");
     }
   };

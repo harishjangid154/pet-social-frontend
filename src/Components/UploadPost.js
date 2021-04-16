@@ -58,6 +58,7 @@ function UploadPost() {
         userName: user.userName,
         category: categoryRef.current.value,
       }),
+      credentials: "include",
     };
 
     const url = api_base_url + "post/";

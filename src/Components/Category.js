@@ -8,20 +8,21 @@ export default function Category() {
 
   useEffect(() => {
     if (store.getState().userActions.user) {
+      axios({
+        method: "post",
+        url: `${api_base_url}category/`,
+      }).then();
       const options = {
         method: "post",
         headers: {
           "Content-Type": "application/json",
           mode: "no-cors",
         },
-        body: JSON.stringify({
-          userId: store.getState().userActions.user._id,
-        }),
+        credentials: "include",
       };
       fetch(`${api_base_url}category/`, options)
         .then((res) => res.json())
         .then((data) => {
-          // console.log(data);
           setCategories([...data]);
         })
         .catch((err) => {

@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import Profile from "../Components/Profile";
 import Category from "../Components/Category";
 import Featured from "../Components/Featured";
-import Post from "../Components/Post";
 import store from "../redux";
 import { connect } from "react-redux";
-import { api_base_url } from "../BaseURL/baseUrl";
-import { Link } from "react-router-dom";
+import jwt from "jsonwebtoken";
+
 import UploadPost from "../Components/UploadPost";
 import ShowPosts from "../Components/ShowPosts";
 
@@ -18,40 +17,26 @@ class TimeLine extends Component {
       limit: 10,
     };
   }
-  async fetchPosts() {
-    console.log("called");
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        mode: "no-cors",
-      },
-      body: JSON.stringify({
-        user: store.getState().userActions.user,
-        skip: this.state.skip,
-        limit: this.state.limit,
-      }),
-    };
-    const url = api_base_url + "post/posts";
-    await fetch(url, options)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.post === "Posts unavailable") {
-          store.dispatch({ type: "SET_POSTS", payload: [] });
-        } else store.dispatch({ type: "SET_POSTS", payload: data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+
   async componentWillMount() {
     console.log(store.getState().userActions);
     console.log(store.getState().userActions.user.userName);
     this.setState({ userName: store.getState().userActions.user.userName });
     if (!store.getState().userActions.isAuthenticated) {
-      console.log("redirect ");
-      this.props.history.push("/login");
-    } else await this.fetchPosts();
+      const token = document.cookie;
+      console.log(token);
+      if (token) {
+        const userToken = token
+          .split("; ")
+          .find((cookie) => cookie.startsWith("jwt-token="))
+          .split("=")[1];
+        const user = jwt.decode(userToken);
+        console.log(user, token);
+        store.dispatch({ type: "SET_USER", payload: user });
+      } else {
+        this.props.history.push("/login");
+      }
+    }
     // store.dispatch({ type: "SHOW_NOTIFICATION", payload: "Profile" });
     console.log("Component called");
   }
@@ -106,16 +91,7 @@ class TimeLine extends Component {
           <div className="content_lft">
             {/* Opetion to filter feed */}
             <Profile />
-            {/* Feed Posts */}
 
-            {/* {store
-              .getState()
-              .postActions.posts.filter(
-                (post) => post.userName === this.state.userName
-              )
-              .map((post) => (
-                <Post post={post} />
-              ))} */}
             <ShowPosts />
           </div>
         </div>

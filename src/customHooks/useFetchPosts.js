@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import store from "../redux";
 import { api_base_url } from "../BaseURL/baseUrl";
 
@@ -12,8 +12,6 @@ export default function useFetchPosts(skip) {
     }
     setLoading(true);
     setErrors(false);
-
-    const user = store.getState().userActions.user;
     const options = {
       method: "POST",
       headers: {
@@ -21,10 +19,10 @@ export default function useFetchPosts(skip) {
         mode: "no-cors",
       },
       body: JSON.stringify({
-        userId: user._id,
         limit: 5,
         skip: skip,
       }),
+      credentials: "include",
     };
     const url = api_base_url + "post/posts";
     await fetch(url, options)
